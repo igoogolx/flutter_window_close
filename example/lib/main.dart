@@ -47,7 +47,6 @@ class _MainPageState extends State<MainPage> {
     FlutterWindowClose.setWindowShouldCloseHandler((args) async {
       debugPrint(args);
       if (_index == 0) {
-        if (_alertShowing) return false;
         _alertShowing = true;
 
         return await showDialog(
@@ -77,11 +76,9 @@ class _MainPageState extends State<MainPage> {
           positiveButtonTitle: "Quit",
           negativeButtonTitle: "Cancel",
         );
-        return result == CustomButton.positiveButton;
       } else if (_index == 3) {
         return await Future.delayed(const Duration(seconds: 1), () => true);
       }
-      return true;
     });
   }
 
