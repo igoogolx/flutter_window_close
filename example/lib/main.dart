@@ -44,7 +44,8 @@ class _MainPageState extends State<MainPage> {
       return;
     }
 
-    FlutterWindowClose.setWindowShouldCloseHandler(() async {
+    FlutterWindowClose.setWindowShouldCloseHandler((args) async {
+      debugPrint(args);
       if (_index == 0) {
         if (_alertShowing) return false;
         _alertShowing = true;
