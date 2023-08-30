@@ -9,7 +9,7 @@ import 'package:flutter/services.dart';
 class FlutterWindowClose {
   FlutterWindowClose._();
 
-  static Future<bool> Function(String?)? _onWindowShoudClose;
+  static Future<void> Function(String?)? _onWindowShoudClose;
   static MethodChannel? _notificationChannel;
   static const MethodChannel _channel = MethodChannel('flutter_window_close');
 
@@ -47,7 +47,7 @@ class FlutterWindowClose {
   /// ```
   ///
   /// The method does not support Flutter Web.
-  static void setWindowShouldCloseHandler(Future<bool> Function(String?)? handler) {
+  static void setWindowShouldCloseHandler(Future<void> Function(String?)? handler) {
     if (kIsWeb) throw Exception('The method does not work in Flutter Web.');
 
     _onWindowShoudClose = handler;
@@ -60,8 +60,7 @@ class FlutterWindowClose {
           // Note: the 'destroyWindow' method just close the window without
           // any confirming.
           if (handler != null) {
-            final result = await handler(call.arguments);
-            if (result) _channel.invokeMethod('destroyWindow');
+            await handler(call.arguments);
           } else {
             _channel.invokeMethod('destroyWindow');
           }
