@@ -89,14 +89,29 @@ void FlutterWindowClosePlugin::HandleMethodCall(
 }
 
 std::optional<LRESULT> FlutterWindowClosePlugin::WindowProcDelegate(
-    HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam) {
-  switch (message) {
-    case WM_CLOSE: {
-      notification_channel_->InvokeMethod(
-          "onWindowClose", std::make_unique<flutter::EncodableValue>(nullptr));
-      return 0;
-    }
+    HWND hwnd, UINT iMessage, WPARAM wparam, LPARAM lparam) {
+  if (iMessage == WM_CLOSE) {
+       auto args = std::make_unique<flutter::EncodableValue>("terminate_app");
+    notification_channel_->InvokeMethod("onWindowClose", std::move(args));
+    return 0;
   }
+   if (iMessage == WM_QUERYENDSESSION) {
+    auto args = std::make_unique<flutter::EncodableValue>("terminate_app");
+    notification_channel_->InvokeMethod("onWindowClose", std::move(args));
+    return 0;
+  }
+  if (iMessage == WM_POWERBROADCAST) {
+    if (wparam == PBT_APMSUSPEND) {
+      auto args = std::make_unique<flutter::EncodableValue>("sleep");
+      notification_channel_->InvokeMethod("onWindowClose", std::move(args));
+    } else if (wparam == PBT_APMRESUMEAUTOMATIC) {
+      auto args = std::make_unique<flutter::EncodableValue>("woke_up");
+      notification_channel_->InvokeMethod("onWindowClose", std::move(args));
+    }
+    return TRUE;
+  }
+  
+  
   return std::nullopt;
 }
 
