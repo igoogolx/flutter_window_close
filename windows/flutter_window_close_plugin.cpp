@@ -90,11 +90,6 @@ void FlutterWindowClosePlugin::HandleMethodCall(
 
 std::optional<LRESULT> FlutterWindowClosePlugin::WindowProcDelegate(
     HWND hwnd, UINT iMessage, WPARAM wparam, LPARAM lparam) {
-  if (iMessage == WM_CLOSE) {
-       auto args = std::make_unique<flutter::EncodableValue>("terminate_app");
-    notification_channel_->InvokeMethod("onWindowClose", std::move(args));
-    return 0;
-  }
    if (iMessage == WM_QUERYENDSESSION) {
     auto args = std::make_unique<flutter::EncodableValue>("terminate_app");
     notification_channel_->InvokeMethod("onWindowClose", std::move(args));
